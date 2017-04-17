@@ -9,7 +9,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://192.168.1.14:5000/")
                 .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
 
         mApi = retrofit.create(Api.class);
@@ -82,6 +89,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<BaseResult> call, Throwable t) {
 
+            }
+        });
+    }
+
+
+    public void loginWithRxjava(View view) {
+        mApi.loginWithRx(new UserParam("bojie","123456")).flatMap(new Func1<BaseResult, Observable<User>>() {
+            @Override
+            public Observable<User> call(BaseResult baseResult) {
+                return mApi.getUserWithRx(baseResult.getId());
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<User>() {
+            @Override
+            public void call(User user) {
+                Toast.makeText(MainActivity.this, user.getUsername(), Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -16,6 +16,20 @@ public class User {
     private int id;
     private String username;
 
+    public User(int id, String username) {
+        this.id = id;
+        this.username = username;
+    }
+
+    public User() {
+    }
+
+    public User(String head_url, int id, String username) {
+        this.head_url = head_url;
+        this.id = id;
+        this.username = username;
+    }
+
     public String getHead_url() {
         return head_url;
     }

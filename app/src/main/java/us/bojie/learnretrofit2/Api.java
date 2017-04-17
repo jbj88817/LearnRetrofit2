@@ -3,7 +3,9 @@ package us.bojie.learnretrofit2;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
@@ -22,4 +24,7 @@ public interface Api {
 
     @GET("user/{id}")
     Call<User> getUser(@Path("id") int id);
+
+    @POST("user/new")
+    Call<BaseResult> saveUser(@Body User user);
 }
